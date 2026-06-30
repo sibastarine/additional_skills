@@ -1,0 +1,115 @@
+Here's a practical Vim workflow focused on C programming:
+
+## Essential Navigation
+```vim
+gd          " jump to local variable definition
+gD          " jump to global variable definition
+*           " search word under cursor forward
+#           " search word under cursor backward
+%           " jump to matching bracket/brace
+[[          " jump to previous function
+]]          " jump to next function
+[{          " jump to unmatched {
+```
+
+## Compilation Workflow
+```vim
+:make           " run make in project root
+:copen          " open quickfix window with errors
+:cnext / :cprev " navigate through errors
+:cnfile         " jump to first error in next file
+:make clean     " clean build
+```
+
+## Tags and Navigation (requires ctags)
+```bash
+# Generate tags in project root
+ctags -R --c-kinds=+p --fields=+iaS .
+```
+```vim
+Ctrl-]      " jump to tag under cursor
+Ctrl-t      " pop back from tag stack
+:tag func   " jump to specific function
+:tselect    " choose from multiple matches
+```
+
+## Code Structure Manipulation
+```vim
+>%          " indent current block
+=%          " auto-indent current block
+>ap         " indent a paragraph (code block)
+=G          " auto-indent to end of file
+>>          " indent current line
+<<          " unindent current line
+```
+
+## Comments and Completion
+```vim
+Ctrl-n/Ctrl-p   " word completion
+Ctrl-x Ctrl-o   " omni-completion (with proper C support)
+Ctrl-x Ctrl-f   " file path completion
+```
+
+## C-specific Text Objects
+```vim
+ci(         " change inside parentheses
+da{         " delete a block including braces
+vi)         " select inside parentheses
+dap         " delete a paragraph (function block)
+```
+
+## Quickfix Shortcuts
+```vim
+:cf     " read errors from file
+:cl     " list all errors
+:cc     " show current error
+:cnf    " jump to first error in next file
+```
+
+## Search and Replace in Functions
+```vim
+" Replace only in current function
+va{V:s/old/new/g
+" Search in included headers
+:grep -r "pattern" includes/
+```
+
+## Buffer Management
+```vim
+:e %.c          " switch to .c file from .h and vice versa
+:A              " toggle header/source (with vim-fswitch plugin)
+:sp %.h         " open header in horizontal split
+:vs %.c         " open source in vertical split
+```
+
+## Essential .vimrc for C
+```vim
+set path+=**           " recursive path search
+set wildmenu           " better command completion
+set makeprg=gcc\ -Wall\ -o\ %<\ %  " for single files
+set errorformat=%f:%l:%c:\ %m      " GCC error format
+
+" Compile and run single file
+nnoremap <F5> :w<CR>:!gcc -Wall % -o %< && ./%<<CR>
+
+" Open man page for word under cursor
+nnoremap K :Man <C-r><C-w><CR>
+```
+
+## Debug-build Switching
+```vim
+" Create commands in .vimrc
+command MakeDebug let &makeprg="gcc -g -Wall -o %< %" | make
+command MakeRelease let &makeprg="gcc -O2 -Wall -o %< %" | make
+```
+
+## Code Folding
+```vim
+zc          " close fold
+zo          " open fold
+zM          " close all folds
+zR          " open all folds
+:set fdm=syntax  " fold based on syntax
+```
+
+The most impactful habits: use `gd` constantly, master `*` and `#` for variable tracing, and always compile from within Vim using `:make` and quickfix to jump directly to errors.
